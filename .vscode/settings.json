@@ -1,0 +1,7 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "d:\\ITU\\S4\\Mr_Naina\\Projet\\lib\\jakarta.el-api-5.0.0.jar",
+        "d:\\ITU\\S4\\Mr_Naina\\Projet\\lib\\jakarta.servlet.jsp.jstl-api-3.0.0.jar"
+    ]
+}
