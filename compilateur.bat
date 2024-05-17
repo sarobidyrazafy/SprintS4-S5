@@ -1,15 +1,12 @@
 @echo off
-setlocal
-
-rem Définir le nom du projet
-set "projet=FrameWork"
+setlocal EnableDelayedExpansion
 
 rem Définir le chemin d'accès au répertoire des sources et au répertoire de destination des fichiers compilés
-set "sourceDirectory=.\src"
-set "destinationDirectory=.\bin"
+set "sourceDirectory=.\..\src"
+set "destinationDirectory=.\..\bin"
 
 rem Chemin vers le répertoire contenant les bibliothèques nécessaires
-set "libDirectory=.\lib"
+set "libDirectory=.\..\lib"  
 
 rem Initialiser la liste des fichiers Java à compiler
 set "javaFiles="
@@ -20,6 +17,11 @@ for /r "%sourceDirectory%" %%G in (*.java) do (
     set "javaFile=%%~fG"
     set "packagePath=!javaFile:%sourceDirectory%=!"
     set "packagePath=!packagePath:~0,-\%%~nG%%~xG!"
+
+    rem Créer les répertoires de sortie si nécessaire
+    if not exist "%destinationDirectory%!packagePath!" (
+        mkdir "%destinationDirectory%!packagePath!" >nul
+    )
 
     rem Ajouter le fichier Java à la liste des fichiers à compiler
     set "javaFiles=!javaFiles! "%%G""
@@ -33,13 +35,5 @@ for %%I in ("%libDirectory%\*.jar") do (
 
 rem Compiler tous les fichiers Java en une seule commande avec les bibliothèques nécessaires
 javac -cp "%classpath%" -d "%destinationDirectory%" !javaFiles!
-
-rem Aller dans le répertoire de destination des fichiers compilés
-cd "%destinationDirectory%"
-
-rem Compresser dans un fichier jar
-jar -cvf "../lib/%projet%.jar" *
-
-echo Fichier .jar créé : %projet%.jar
 
 endlocal
