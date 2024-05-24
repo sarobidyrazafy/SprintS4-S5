@@ -2,7 +2,7 @@
 setlocal
 
 rem Déclaration des variables
-set projet=Sprint1
+set projet=Sprint02
 set temp=.\..\temp
 rem set web=.\views
 set conf=.\..\..\test\conf
