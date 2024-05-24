@@ -13,12 +13,16 @@ public class Mapping {
         return className;
     }
 
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
     public String getMethodName() {
         return methodName;
     }
 
-    @Override
-    public String toString() {
-        return "Mapping{" + "className='" + className + '\'' + ", methodName='" + methodName + '\'' + '}';
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
     }
 }
+
