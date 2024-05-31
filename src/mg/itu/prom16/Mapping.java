@@ -1,4 +1,4 @@
-package mg.itu.mapping;
+package mg.itu.prom16;
 
 public class Mapping {
     private String className;
@@ -13,16 +13,16 @@ public class Mapping {
         return className;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
     public String getMethodName() {
         return methodName;
     }
 
-    public void setMethodName(String methodName) {
-        this.methodName = methodName;
+    @Override
+    public String toString() {
+        return getClass().getSimpleName()+":{" +
+                "className='" + className + '\'' +
+                ", methodName='" + methodName + '\'' +
+                '}';
     }
 }
 
