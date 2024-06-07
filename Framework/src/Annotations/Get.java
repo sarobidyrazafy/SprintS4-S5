@@ -1,4 +1,4 @@
-package mg.itu.annotation;
+package Annotations;
 
 import java.lang.annotation.*;
 

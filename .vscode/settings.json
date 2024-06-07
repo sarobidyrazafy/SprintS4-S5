@@ -1,7 +1,9 @@
 {
-    "java.project.sourcePaths": ["src"],
-    "java.project.outputPath": "bin",
+    "java.project.sourcePaths": [
+        "Framework\\src"
+    ],
+    "java.project.outputPath": "Framework\\bin",
     "java.project.referencedLibraries": [
-        "lib/**/*.jar"
+        "Framework\\lib\\servlet-api.jar"
     ]
 }
