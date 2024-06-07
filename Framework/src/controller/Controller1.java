@@ -1,8 +1,10 @@
 package controller;
 
-import Annotations.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import Annotations.*;
+import mg.prom16.ModelView;
 
 @Controller
 public class Controller1 {
@@ -10,6 +12,15 @@ public class Controller1 {
     @Get(value = "/test")
     public String method1() {
         return "HELLOO!";
+    }
+
+    @Get(value = "/pageNotFound")
+    public ModelView method2() { 
+        ModelView modelView = new ModelView();
+        modelView.setUrl("/WEB-INF/views/ErrorPage.jsp");
+        modelView.addObject("message", "Page Not Found");
+        modelView.addObject("code", 404);
+        return modelView;
     }
 
     @Get(value = "/date")

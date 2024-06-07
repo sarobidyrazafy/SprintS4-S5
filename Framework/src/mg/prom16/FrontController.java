@@ -88,6 +88,14 @@ public class FrontController extends HttpServlet {
         
         try (PrintWriter out = response.getWriter()) {
 
+            // if (accessedUrls.contains(url)) {
+            //     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            //     out.println("Error: URL deja existant.");
+            //     return;
+            // }
+
+            // accessedUrls.add(url);
+
             Mapping mapping = urlMappings.get(url);
 
             if (mapping != null) {
@@ -107,6 +115,8 @@ public class FrontController extends HttpServlet {
                     RequestDispatcher dispatcher = request.getRequestDispatcher(viewUrl);
                     dispatcher.forward(request, response);
                     
+                // } else if (returnValue instanceof Date) {
+                //     out.println("<p>Contenue de la methode <strong>" + mapping.getMethodName() + "</strong> : " + returnValue.toString() + "</p>");
                 } else {
                     out.println("Type de retour non reconnu: " + returnValue.getClass().getName());
 
