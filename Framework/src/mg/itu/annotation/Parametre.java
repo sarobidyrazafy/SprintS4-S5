@@ -1,9 +1,8 @@
-package Annotations;
+package mg.itu.annotation;
 import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
-public @interface Param {
-    //Attribut pour spécifier le nom du paramètre de la requête
+public @interface Parametre {
     String name();
 }

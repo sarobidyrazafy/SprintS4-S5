@@ -8,10 +8,7 @@
 
  1. Assurez-vous d'avoir les technologies nécessaires sur votre système.
  2. Clonez ce dépôt sur votre machine locale.
- 3. Ouvire une invite de commande et naviguez jusqu'au répertoire racine du projet.
- 4. Exécutez la commande suivante :
+ 3. Effectuez un double clic sur le fichier deployment.bat dans .\framework\script\deployement.bat
+ pour deployer le projet
 
-    - **Pour Windows :**
-      ```batch
-      .\Framework\script\deployment.bat
-      ```
+    

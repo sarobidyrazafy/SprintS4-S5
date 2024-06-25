@@ -1,8 +1,8 @@
-package Annotations;
-
+package mg.itu.annotation;
 import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
-//Controller appliquée aux classes
 @Target(ElementType.TYPE)
-public @interface Controller { }
+
+public @interface AnnotationController {
+}
