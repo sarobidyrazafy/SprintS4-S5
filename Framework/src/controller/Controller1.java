@@ -38,4 +38,11 @@ public class Controller1 {
         mv.addObject("prenom", prenom);
         return mv;
     }
+
+    @Get(value = "/formEmploye")
+    public ModelView showForm() {
+        ModelView mv = new ModelView();
+        mv.setUrl("/views/FormEmploye.jsp");
+        return mv;
+    }
 }
