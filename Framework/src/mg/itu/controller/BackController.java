@@ -8,14 +8,11 @@ public class BackController {
 
     public BackController(){}
 
+    
     // @Get(value = "/")
-    // public String welcome(){
-    //     return "Hello Word";
+    // public String hello(){
+    //     return "Sprint";
     // }
-    @Get(value = "/")
-    public String hello(){
-        return "Sprint";
-    }
     @Get(value = "/date")
     public Date day(){
         return new Date(LocalDate.now().toEpochDay());

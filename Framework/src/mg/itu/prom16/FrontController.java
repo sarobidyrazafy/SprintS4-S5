@@ -18,6 +18,7 @@ import mg.itu.annotation.FormParametre;
 import mg.itu.annotation.Get;
 import mg.itu.annotation.Parametre;
 import mg.itu.annotation.RequestBody;
+import mg.itu.model.CustomSession;
 
 public class FrontController extends HttpServlet {
     Map<String, Mapping> urlMappings = new HashMap<>();
@@ -237,7 +238,11 @@ public class FrontController extends HttpServlet {
             }
     
             for (int i = 0; i < methodParams.length; i++) {
-                if (methodParams[i].isAnnotationPresent(RequestBody.class)) {
+                if(methodParams[i].getType().equals(CustomSession.class)){
+                    CustomSession session = new CustomSession();
+                    session.setSession(request.getSession());
+                    args[i] = session;
+                } else if (methodParams[i].isAnnotationPresent(RequestBody.class)) {
                     Class<?> paramType = methodParams[i].getType();
                     Object paramObject = paramType.getDeclaredConstructor().newInstance();
                     for (Field field : paramType.getDeclaredFields()) {
@@ -262,6 +267,15 @@ public class FrontController extends HttpServlet {
             }
             
             Object instance = clazz.getDeclaredConstructor().newInstance();
+            for(Field field: clazz.getDeclaredFields()){
+                if (field.getType().equals(CustomSession.class)) {
+                    field.setAccessible(true);
+                    CustomSession session = new CustomSession();
+                    session.setSession(request.getSession());
+                    field.set(instance,session);
+                    break;
+                }
+            }
             returnValue = map.getMethod().invoke(instance, args);
         } catch (Exception e) {
             throw e;
