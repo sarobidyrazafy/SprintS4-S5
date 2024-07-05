@@ -1,5 +1,5 @@
 # Other files and folders
 .vscode/
-Test/
-Framework/bin/
-Framework/lib/
+test/
+framework/bin/
+framework/lib/
