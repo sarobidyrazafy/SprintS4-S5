@@ -5,6 +5,12 @@ import java.lang.reflect.*;
 import java.net.URL;
 import java.util.*;
 import java.net.URLDecoder;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import mg.itu.annotation.AnnotationController;
@@ -70,7 +76,7 @@ public class FrontController extends HttpServlet {
                                         throw new Exception("The method "+urlMappings.get(key).getMethod()+" have already the url "+key+", so you can't affect this url with the method "+mapping.getMethod());
                                     }
                                     urlMappings.put(key, mapping);
-                                }
+                                } 
                             }
                         }
                     }
@@ -109,22 +115,127 @@ public class FrontController extends HttpServlet {
         return classes;
     }
 
-    private Object getValueInMethod(HttpServletRequest request, Mapping map) throws Exception{
+    private Object miCast(Class<?> targetType, String value) {
+        if (targetType == String.class) {
+            return value;
+        } else if (targetType == int.class || targetType == Integer.class) {
+            return Integer.parseInt(value);
+        } else if (targetType == double.class || targetType == Double.class) {
+            return Double.parseDouble(value);
+        } else if (targetType == float.class || targetType == Float.class) {
+            return Float.parseFloat(value);
+        } else if (targetType == boolean.class || targetType == Boolean.class) {
+            return Boolean.parseBoolean(value);
+        } else if (targetType == LocalDate.class) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            return LocalDate.parse(value, formatter);
+        } else if (targetType == Date.class) {
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                return dateFormat.parse(value);
+            } catch (ParseException e) {
+                throw new IllegalArgumentException("Format de date ivalide", e);
+            }
+        } else {
+            throw new IllegalArgumentException("Type de paramètre non supporté: " + targetType);
+        }
+    }
+
+    // private Object getValueInMethod(HttpServletRequest request, Mapping map) throws Exception{
+    //     Object returnValue = null;
+    //     try {
+    //         Class<?> clazz = Class.forName(map.getClassName());
+    //         map.getMethod().setAccessible(true);
+
+    //         Parameter[] methodParams = map.getMethod().getParameters();
+    //         Object[] args = new Object[methodParams.length];
+
+    //         Enumeration<String> params = request.getParameterNames();
+    //         Map<String, String> paramMap = new HashMap<>();
+
+    //         while (params.hasMoreElements()) {
+    //             String paramName = params.nextElement();
+    //             paramMap.put(paramName, request.getParameter(paramName));
+    //         }
+    //         for (int i = 0; i < methodParams.length; i++) {
+    //             // if (methodParams[i].isAnnotationPresent(RequestBody.class)) {
+    //             //     Class<?> paramType = methodParams[i].getType();
+    //             //     Object paramObject = paramType.getDeclaredConstructor().newInstance();
+    //             //     for (Field field : paramType.getDeclaredFields()) {
+    //             //         String paramName = field.isAnnotationPresent(FormParametre.class) ? field.getAnnotation(FormParametre.class).value() : field.getName();
+    //             //         if (paramMap.containsKey(paramName)) {
+    //             //             field.setAccessible(true);
+    //             //             field.set(paramObject, paramMap.get(paramName));
+    //             //         }
+    //             //     }
+    //             //     args[i] = paramObject;
+    //             // }
+    //             // //sprint6
+    //             // else if (methodParams[i].isAnnotationPresent(Parametre.class)) {
+    //             //     String paramName = methodParams[i].getAnnotation(Parametre.class).name();
+    //             //     String paramValue = paramMap.get(paramName);
+    //             //     args[i] = paramValue;
+    //             // } else {
+    //             //     if (paramMap.containsKey(methodParams[i].getName())) {
+    //             //         args[i] = paramMap.get(methodParams[i].getName());
+    //             //     } else {
+    //             //         args[i] = null;
+    //             //     }
+    //             // }
+    //             if (methodParams[i].isAnnotationPresent(RequestBody.class)) {
+    //                 Class<?> paramType = methodParams[i].getType();
+    //                 Object paramObject = paramType.getDeclaredConstructor().newInstance();
+    //                 for (Field field : paramType.getDeclaredFields()) {
+    //                     String paramName = field.isAnnotationPresent(FormParametre.class) ? field.getAnnotation(FormParametre.class).value() : field.getName();
+    //                     if (paramMap.containsKey(paramName)) {
+    //                         field.setAccessible(true);
+    //                         field.set(paramObject, miCast(field.getType(), paramMap.get(paramName)));
+    //                     }
+    //                 }
+    //                 args[i] = paramObject;
+    //             } else if (methodParams[i].isAnnotationPresent(Parametre.class)) {
+    //                 String paramName = methodParams[i].getAnnotation(Parametre.class).name();
+    //                 String paramValue = paramMap.get(paramName);
+    //                 args[i] = miCast(methodParams[i].getType(), paramValue);
+    //             } else {
+    //                 if (paramMap.containsKey(methodParams[i].getName())) {
+    //                     args[i] = miCast(methodParams[i].getType(), paramMap.get(methodParams[i].getName()));
+    //                 } else {
+    //                     args[i] = null;
+    //                 }
+    //             }
+    //         }
+            
+    //         Object instance = clazz.getDeclaredConstructor().newInstance();
+    //         returnValue = map.getMethod().invoke(instance, args);
+    //     } catch (Exception e) {
+    //         throw e;
+    //     }
+    //     return returnValue;
+    // }
+
+    private Object getValueInMethod(HttpServletRequest request, Mapping map) throws Exception {
         Object returnValue = null;
         try {
             Class<?> clazz = Class.forName(map.getClassName());
             map.getMethod().setAccessible(true);
-
+    
             Parameter[] methodParams = map.getMethod().getParameters();
+            
+            if (methodParams.length == 0) {
+                throw new IllegalArgumentException("ETU002616: methode " + map.getMethod().getName() + " sans parametres.");
+            }
+    
             Object[] args = new Object[methodParams.length];
-
+    
             Enumeration<String> params = request.getParameterNames();
             Map<String, String> paramMap = new HashMap<>();
-
+    
             while (params.hasMoreElements()) {
                 String paramName = params.nextElement();
                 paramMap.put(paramName, request.getParameter(paramName));
             }
+    
             for (int i = 0; i < methodParams.length; i++) {
                 if (methodParams[i].isAnnotationPresent(RequestBody.class)) {
                     Class<?> paramType = methodParams[i].getType();
@@ -133,19 +244,17 @@ public class FrontController extends HttpServlet {
                         String paramName = field.isAnnotationPresent(FormParametre.class) ? field.getAnnotation(FormParametre.class).value() : field.getName();
                         if (paramMap.containsKey(paramName)) {
                             field.setAccessible(true);
-                            field.set(paramObject, paramMap.get(paramName));
+                            field.set(paramObject, miCast(field.getType(), paramMap.get(paramName)));
                         }
                     }
                     args[i] = paramObject;
-                }
-                //sprint6
-                else if (methodParams[i].isAnnotationPresent(Parametre.class)) {
+                } else if (methodParams[i].isAnnotationPresent(Parametre.class)) {
                     String paramName = methodParams[i].getAnnotation(Parametre.class).name();
                     String paramValue = paramMap.get(paramName);
-                    args[i] = paramValue;
+                    args[i] = miCast(methodParams[i].getType(), paramValue);
                 } else {
                     if (paramMap.containsKey(methodParams[i].getName())) {
-                        args[i] = paramMap.get(methodParams[i].getName());
+                        args[i] = miCast(methodParams[i].getType(), paramMap.get(methodParams[i].getName()));
                     } else {
                         args[i] = null;
                     }
@@ -160,8 +269,6 @@ public class FrontController extends HttpServlet {
         return returnValue;
     }
 
-
-
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -174,7 +281,8 @@ public class FrontController extends HttpServlet {
                 Object ob = getValueInMethod(request, mapping);
                 if (ob != null) {
                     if (ob instanceof String) {
-                        out.println("The value returned by the method <b>" + mapping.getMethod().getName() + "</b> is: <b>" + ob+"<b>");
+                        // out.println("Method <b>" + mapping.getMethod().getName() + "</b> Value: <b>" + ob+"<b>");
+                        out.println(ob);
                     }
                     else if(ob instanceof ModelAndView mw){
                         for (String cle : mw.getData().keySet()) {

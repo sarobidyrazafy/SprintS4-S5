@@ -1,8 +1,3 @@
-<%-- 
-    Document   : index
-    Created on : 25 janv. 2024, 11:59:21
-    Author     : mahan
---%>
 <%@page import="mg.itu.controller.EmpController"%>
 <%@page import="java.util.ArrayList"%>
 <%
@@ -19,6 +14,7 @@
 </head>
 <body>
 <div class="container mt-5">
+    <h1>Formulaire Employe</h1>
     <form action="<%= link %>" method="post">
         <label for="name">Nom:</label>
         <input type="text" name="nom" id="nom"> <br>

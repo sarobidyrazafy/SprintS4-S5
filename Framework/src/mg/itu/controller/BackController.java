@@ -8,13 +8,13 @@ public class BackController {
 
     public BackController(){}
 
+    // @Get(value = "/")
+    // public String welcome(){
+    //     return "Hello Word";
+    // }
     @Get(value = "/")
-    public String welcome(){
-        return "Hello Word";
-    }
-    @Get(value = "/hello")
     public String hello(){
-        return "Sprint 0-7";
+        return "Sprint";
     }
     @Get(value = "/date")
     public Date day(){
