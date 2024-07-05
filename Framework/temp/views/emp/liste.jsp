@@ -1,8 +1,3 @@
-<%-- 
-    Document   : index
-    Created on : 25 janv. 2024, 11:59:21
-    Author     : mahan
---%>
 <%@page import="mg.itu.controller.EmpController"%>
 <%@page import="java.util.ArrayList"%>
 <%
@@ -29,7 +24,7 @@
         </thead>
         <tbody>
             <% for (EmpController emp : emps) { %>
-                <tr>O
+                <tr>
                     <td><%=emp.getNom() %></td>
                     <td><%=emp.getPrenom() %></td>
                     <td><%=emp.getAge() %></td>
