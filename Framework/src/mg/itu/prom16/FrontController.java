@@ -4,6 +4,7 @@ import java.io.*;
 import java.lang.reflect.*;
 import java.net.URL;
 import java.util.*;
+import java.util.HashMap;
 import java.net.URLDecoder;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -18,7 +19,10 @@ import mg.itu.annotation.FormParametre;
 import mg.itu.annotation.Get;
 import mg.itu.annotation.Parametre;
 import mg.itu.annotation.RequestBody;
+import mg.itu.annotation.Restapi;
 import mg.itu.model.CustomSession;
+
+import com.google.gson.Gson;
 
 public class FrontController extends HttpServlet {
     Map<String, Mapping> urlMappings = new HashMap<>();
@@ -287,12 +291,20 @@ public class FrontController extends HttpServlet {
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
+        Gson gson = new Gson();
+
         String url = request.getRequestURI().substring(request.getContextPath().length());
         try{
             PrintWriter out = response.getWriter();
             Mapping mapping = urlMappings.get(url);
             if (mapping != null) {
+
+                //Récupérer la valeur de retour de la méthode
                 Object ob = getValueInMethod(request, mapping);
+
+                //Vérifier si la classe ou méthode est annotée @RestApi
+                boolean isRestApi = mapping.getMethod().isAnnotationPresent(Restapi.class);
+
                 if (ob != null) {
                     if (ob instanceof String) {
                         // out.println("Method <b>" + mapping.getMethod().getName() + "</b> Value: <b>" + ob+"<b>");
