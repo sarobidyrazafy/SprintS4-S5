@@ -91,6 +91,10 @@ public class EmpController {
         return listAllNote(0);
     }
 
+    @Get(value = "/")
+    public int acceuil(@Parametre(name = "etu") int etu){
+        return etu;
+    }
 
     private ArrayList<Employe> generateListEmp() {
         ArrayList<Employe> listemp = new ArrayList<>();
