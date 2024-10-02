@@ -4,7 +4,6 @@ import java.io.*;
 import java.lang.reflect.*;
 import java.net.URL;
 import java.util.*;
-import java.util.HashMap;
 import java.net.URLDecoder;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -308,17 +307,40 @@ public class FrontController extends HttpServlet {
                 if (ob != null) {
                     if (ob instanceof String) {
                         // out.println("Method <b>" + mapping.getMethod().getName() + "</b> Value: <b>" + ob+"<b>");
+                        //Renvoyer directement l'object si c'est un String
                         out.println(ob);
                     }
                     else if(ob instanceof ModelAndView mw){
-                        for (String cle : mw.getData().keySet()) {
-                            request.setAttribute(cle, mw.getData().get(cle));
+                        if (isRestApi) {
+
+                           String jsonResponse = gson.toJson(mw.data); //convertir les données en json
+                           response.setContentType("application/json"); //indiquer que la reponse est json
+                           out.println(jsonResponse); //envoyer la reponse json
+
+                        }else{
+
+                            //Comportement mahazatra ModelAndView
+                            for (String cle : mw.getData().keySet()) {
+                                request.setAttribute(cle, mw.getData().get(cle));
+                            }
+                            // RequestDispatcher dispacther = request.getRequestDispatcher(mw.getUrl());
+                            // dispacther.forward(request, response);
+                            response.setContentType("text/html;charset=UTF-8");
+                            out.println("Page HTML à afficher.");
                         }
-                        RequestDispatcher dispacther = request.getRequestDispatcher(mw.getUrl());
-                        dispacther.forward(request, response);
                     }
                     else{
-                        throw new ServletException("Failed to return the value",new Exception("The value returned by the method <b>" + mapping.getMethod() + "</b> is not in the framework"));
+                        if (isRestApi) {
+                            String jsonResponse = gson.toJson(mw.data); //convertir les données en json
+                            response.setContentType("application/json"); //indiquer que la reponse est json
+                            out.println(jsonResponse); //envoyer la reponse json
+ 
+                        }else{
+ 
+                            throw new ServletException("Failed to return the value",
+                                new Exception("The value returned by the method <b>" + mapping.getMethod() + "</b> is not in the framework"));
+                        }
+                    
                     }
                 }
                 else{
@@ -326,7 +348,8 @@ public class FrontController extends HttpServlet {
                 }
                 
             } else {
-                throw new ServletException("Failed to get the method",new Exception("No Get method associated with the URL: <b>" + url+"</b>"));
+                throw new ServletException("Failed to get the method",
+                    new Exception("No Get method associated with the URL: <b>" + url+"</b>"));
             }
         }
         catch(Exception e){
