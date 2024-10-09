@@ -320,8 +320,8 @@ public class FrontController extends HttpServlet {
                         // + ob+"<b>");
                         // Renvoyer directement l'object si c'est un String
                         out.println(ob);
-                    } else if (ob instanceof ModelAndView) {
-                        ModelAndView mw = (ModelAndView) ob;
+                    } else if (ob instanceof ModelAndView mw) {
+                        // ModelAndView mw = (ModelAndView) ob;
                         if (isRestApi) {
 
                             String jsonResponse = gson.toJson(mw.data); // convertir les données en json
