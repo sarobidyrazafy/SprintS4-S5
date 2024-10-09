@@ -18,7 +18,7 @@ import mg.itu.annotation.FormParametre;
 import mg.itu.annotation.Get;
 import mg.itu.annotation.Parametre;
 import mg.itu.annotation.RequestBody;
-import mg.itu.annotation.*;
+import mg.itu.annotation.RestApi;
 import mg.itu.model.CustomSession;
 
 import com.google.gson.Gson;
