@@ -307,14 +307,17 @@ public class FrontController extends HttpServlet {
             Mapping mapping = urlMappings.get(url);
             if (mapping != null) {
                 String httpMethod = request.getMethod();
-                VerbAction verbAction = mapping.getActionbyVerb();
-                // Récupérer la valeur de retour de la méthode
-                Object ob = getValueInMethod(request, mapping);
+                VerbAction verbAction = mapping.getActionByVerb(httpMethod);
+                if (verbAction == null) {
+                    throw new Exception("Méthode HTTP incorrecte:" +httpMethod+ "utilisé pour " 
+                                        +url+ "Aucun handler possible pour ce verbe");
+                }
                 Method method = verbAction.getMethodName();
                 RestApi methodApi =  method
-                // Vérifier si la classe ou méthode est annotée @RestApi
-                boolean isRestApi = mapping.getMethod().isAnnotationPresent(RestApi.class);
 
+                // Vérifier si la classe ou méthode est annotée @RestApi
+                // boolean isRestApi = mapping.getMethod().isAnnotationPresent(RestApi.class);
+                Object ob = getValueInMethod(request, mapping);
                 if (ob != null) {
                     if (ob instanceof String) {
                         // out.println("Method <b>" + mapping.getMethod().getName() + "</b> Value: <b>"
