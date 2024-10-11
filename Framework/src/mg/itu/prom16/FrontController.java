@@ -20,6 +20,7 @@ import mg.itu.annotation.Parametre;
 import mg.itu.annotation.RequestBody;
 import mg.itu.annotation.RestApi;
 import mg.itu.model.CustomSession;
+import mg.itu.model.VerbAction;
 
 import com.google.gson.Gson;
 
@@ -298,19 +299,19 @@ public class FrontController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-
+        response.setContentType("text/json");
         Gson gson = new Gson();
-
         String url = request.getRequestURI().substring(request.getContextPath().length());
         try {
             PrintWriter out = response.getWriter();
             Mapping mapping = urlMappings.get(url);
             if (mapping != null) {
-
+                String httpMethod = request.getMethod();
+                VerbAction verbAction = mapping.getActionbyVerb();
                 // Récupérer la valeur de retour de la méthode
                 Object ob = getValueInMethod(request, mapping);
-
+                Method method = verbAction.getMethodName();
+                RestApi methodApi =  method
                 // Vérifier si la classe ou méthode est annotée @RestApi
                 boolean isRestApi = mapping.getMethod().isAnnotationPresent(RestApi.class);
 

@@ -1,30 +1,40 @@
 package mg.itu.prom16;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+
+import mg.itu.model.VerbAction;
 
 public class Mapping {
-    private String className;
-    private Method methodName;
+    private ArrayList<VerbAction> verb;
 
-    public Mapping(String className, Method methodName) {
-        this.className = className;
-        this.methodName = methodName;
+    public Mapping() {
+        verb = new ArrayList<>();
     }
 
-    public String getClassName() {
-        return className;
+    public ArrayList<VerbAction> getVerb() {
+        return verb;
     }
 
-    public Method getMethod() {
-        return methodName;
+    public void setVerb(ArrayList<VerbAction> verb) {
+        this.verb = verb;
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName()+":{" +
-                "className='" + className + '\'' +
-                ", methodName='" + methodName.getName() + '\'' +
-                '}';
+    public void addVerbAction(VerbAction verbaction) throws Exception {
+        for (VerbAction action : verb) {
+            if (action.getHttpMethod().equalsIgnoreCase(verbaction.getHttpMethod())) {
+                throw new Exception("Cet url à déja cette méthode");
+            }
+        }
+        verb.add(verbaction);
+    }
+
+    public VerbAction getActionByVerb(String httpVerb) {
+        for (VerbAction verbAction : verb) {
+            if (httpVerb.equals(verbAction.getHttpMethod())) {
+                return verbAction;
+            }
+        }
+        return null;
     }
 }
-
