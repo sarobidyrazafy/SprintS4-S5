@@ -309,54 +309,42 @@ public class FrontController extends HttpServlet {
                 String httpMethod = request.getMethod();
                 VerbAction verbAction = mapping.getActionByVerb(httpMethod);
                 if (verbAction == null) {
-                    throw new Exception("Méthode HTTP incorrecte:" +httpMethod+ "utilisé pour " 
-                                        +url+ "Aucun handler possible pour ce verbe");
+                    throw new Exception("Méthode HTTP incorrecte:" + httpMethod + "utilisé pour "
+                            + url + "Aucun handler possible pour ce verbe");
                 }
                 Method method = verbAction.getMethodName();
-                RestApi methodApi =  method
+                RestApi methodApi = method.getAnnotation(RestApi.class);
 
                 // Vérifier si la classe ou méthode est annotée @RestApi
                 // boolean isRestApi = mapping.getMethod().isAnnotationPresent(RestApi.class);
                 Object ob = getValueInMethod(request, mapping);
                 if (ob != null) {
-                    if (ob instanceof String) {
-                        // out.println("Method <b>" + mapping.getMethod().getName() + "</b> Value: <b>"
-                        // + ob+"<b>");
-                        // Renvoyer directement l'object si c'est un String
-                        out.println(ob);
-                    } else if (ob instanceof ModelAndView mw) {
-                        // ModelAndView mw = (ModelAndView) ob;
-                        if (isRestApi) {
-
-                            String jsonResponse = gson.toJson(mw.data); // convertir les données en json
-                            response.setContentType("application/json"); // indiquer que la reponse est json
-                            out.println(jsonResponse); // envoyer la reponse json
-
+                    if (methodApi != null) {
+                        Gson gson = new Gson();
+                        if (ob instanceof ModelAndView mw) {
+                            JsonObject json = new JsonObject();
+                            for (String key : mw.getData().keySet()) {
+                                json.add(key, gson.toJsonTree(mw.getData().get(key)));
+                            }
+                            out.println(gson.toJson(json));
                         } else {
-
-                            // Comportement mahazatra ModelAndView
+                            out.println(gson.toJson(ob));
+                        }
+                    } else {
+                        if (ob instanceof String) {
+                            out.println("The value returned by the method <b>" + verbAction.getMethodName().getName()
+                                    + "</b> is: <b>" + ob + "<b>");
+                        } else if (ob instanceof ModelAndView mw) {
                             for (String cle : mw.getData().keySet()) {
                                 request.setAttribute(cle, mw.getData().get(cle));
                             }
-                            // RequestDispatcher dispacther = request.getRequestDispatcher(mw.getUrl());
-                            // dispacther.forward(request, response);
-                            response.setContentType("text/html;charset=UTF-8");
-                            out.println("Page HTML à afficher.");
-                        }
-                    } else {
-                        ModelAndView mw = (ModelAndView) ob;
-                        if (isRestApi) {
-                            String jsonResponse = gson.toJson(mw.data); // convertir les données en json
-                            response.setContentType("application/json"); // indiquer que la reponse est json
-                            out.println(jsonResponse); // envoyer la reponse json
-
+                            RequestDispatcher dispatcher = request.getRequestDispatcher(mw.getUrl());
+                            dispatcher.forward(request, response);
                         } else {
-
                             throw new ServletException("Failed to return the value",
-                                    new Exception("The value returned by the method <b>" + mapping.getMethod()
-                                            + "</b> is not in the framework"));
+                                    new Exception("The value returned by the method <b>"
+                                            + verbAction.getMethodName().getName() + "</b> is not in the framework"));
                         }
-
                     }
                 } else {
                     throw new ServletException("No value returned");
