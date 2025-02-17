@@ -1,26 +1,26 @@
 package mg.itu.model;
 
-import jakarta.servlet.http.HttpSession;
+import javax.servlet.http.HttpSession;
 
 public class CustomSession {
     private HttpSession session;
 
-    public void add(String key, Object value){
-        if(session.getAttribute(key) == null){
+    public void add(String key, Object value) {
+        if (session.getAttribute(key) == null) {
             session.setAttribute(key, value);
         }
     }
 
-    public Object get(String key){
+    public Object get(String key) {
         return session.getAttribute(key);
     }
 
-    public void delete(String key){
+    public void delete(String key) {
         session.removeAttribute(key);
     }
 
-    public void update(String key, Object value){
-        if(session.getAttribute(key) != null){
+    public void update(String key, Object value) {
+        if (session.getAttribute(key) != null) {
             session.setAttribute(key, value);
         }
     }
@@ -32,5 +32,5 @@ public class CustomSession {
     public void setSession(HttpSession session) {
         this.session = session;
     }
-    
+
 }

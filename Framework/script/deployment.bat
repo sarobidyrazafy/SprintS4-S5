@@ -2,7 +2,7 @@
 setlocal
 
 rem Déclaration des variables
-set projet=Sprint_All
+set projet=sprint_suite
 set temp=.\..\temp
 set conf=.\..\..\test\conf
 set lib=.\..\lib

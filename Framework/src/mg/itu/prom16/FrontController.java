@@ -320,8 +320,8 @@ public class FrontController extends HttpServlet {
                 Object ob = getValueInMethod(request, mapping);
                 if (ob != null) {
                     if (methodApi != null) {
-                        Gson gson = new Gson();
-                        if (ob instanceof ModelAndView mw) {
+                        if (ob instanceof ModelAndView) {
+                            ModelAndView mw = new ModelAndView();
                             JsonObject json = new JsonObject();
                             for (String key : mw.getData().keySet()) {
                                 json.add(key, gson.toJsonTree(mw.getData().get(key)));
@@ -334,7 +334,8 @@ public class FrontController extends HttpServlet {
                         if (ob instanceof String) {
                             out.println("The value returned by the method <b>" + verbAction.getMethodName().getName()
                                     + "</b> is: <b>" + ob + "<b>");
-                        } else if (ob instanceof ModelAndView mw) {
+                        } else if (ob instanceof ModelAndView) {
+                            ModelAndView mw = new ModelAndView();
                             for (String cle : mw.getData().keySet()) {
                                 request.setAttribute(cle, mw.getData().get(cle));
                             }
