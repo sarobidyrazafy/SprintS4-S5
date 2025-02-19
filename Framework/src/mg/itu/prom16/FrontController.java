@@ -34,13 +34,12 @@ public class FrontController extends HttpServlet {
         }
     }
 
-    private void scanner() throws ServletException{
+    private void scanner() throws ServletException {
         if (!checked) {
             String pack = getServletConfig().getInitParameter("ControllerPackage");
-            if(pack == null){
+            if (pack == null) {
                 throw new ServletException("The parameter name ControllerPackage doesn't exist");
-            }
-            else{
+            } else {
                 try {
                     list = getClassesInSpecificPackage(pack);
                     getListController(pack);
@@ -59,7 +58,7 @@ public class FrontController extends HttpServlet {
         File file = new File(path);
 
         list.clear();
-        
+
         if (file.exists()) {
             if (file.isDirectory()) {
                 for (File uniquefile : file.listFiles()) {
@@ -68,28 +67,31 @@ public class FrontController extends HttpServlet {
                         Class<?> clazz = Class.forName(className);
                         if (clazz.isAnnotationPresent(AnnotationController.class)) {
                             list.add(clazz);
-    
+
                             for (Method method : clazz.getMethods()) {
                                 if (method.isAnnotationPresent(Get.class)) {
                                     Mapping mapping = new Mapping(clazz.getName(), method);
                                     String key = method.getAnnotation(Get.class).value();
                                     if (urlMappings.containsKey(key)) {
-                                        throw new Exception("The method "+urlMappings.get(key).getMethod()+" have already the url "+key+", so you can't affect this url with the method "+mapping.getMethod());
+                                        throw new Exception("The method " + urlMappings.get(key).getMethod()
+                                                + " have already the url " + key
+                                                + ", so you can't affect this url with the method "
+                                                + mapping.getMethod());
                                     }
                                     urlMappings.put(key, mapping);
-                                } 
+                                }
                             }
                         }
                     }
                 }
             }
-        }
-        else{
-            throw new Exception("The package "+package_name+" doesn't exist");
+        } else {
+            throw new Exception("The package " + package_name + " doesn't exist");
         }
     }
-    
-    private ArrayList<Class<?>> getClassesInSpecificPackage(String packageName) throws IOException, ClassNotFoundException {
+
+    private ArrayList<Class<?>> getClassesInSpecificPackage(String packageName)
+            throws IOException, ClassNotFoundException {
         ArrayList<Class<?>> classes = new ArrayList<>();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         String path = packageName.replace('.', '/');
@@ -103,7 +105,8 @@ public class FrontController extends HttpServlet {
                     File[] files = directory.listFiles();
                     for (File file : files) {
                         if (file.isFile() && file.getName().endsWith(".class")) {
-                            String className = packageName + '.' + file.getName().substring(0, file.getName().length() - 6);
+                            String className = packageName + '.'
+                                    + file.getName().substring(0, file.getName().length() - 6);
                             Class<?> clazz = Class.forName(className);
                             if (clazz.isAnnotationPresent(AnnotationController.class)) {
                                 classes.add(clazz);
@@ -142,77 +145,81 @@ public class FrontController extends HttpServlet {
         }
     }
 
-    // private Object getValueInMethod(HttpServletRequest request, Mapping map) throws Exception{
-    //     Object returnValue = null;
-    //     try {
-    //         Class<?> clazz = Class.forName(map.getClassName());
-    //         map.getMethod().setAccessible(true);
+    // private Object getValueInMethod(HttpServletRequest request, Mapping map)
+    // throws Exception{
+    // Object returnValue = null;
+    // try {
+    // Class<?> clazz = Class.forName(map.getClassName());
+    // map.getMethod().setAccessible(true);
 
-    //         Parameter[] methodParams = map.getMethod().getParameters();
-    //         Object[] args = new Object[methodParams.length];
+    // Parameter[] methodParams = map.getMethod().getParameters();
+    // Object[] args = new Object[methodParams.length];
 
-    //         Enumeration<String> params = request.getParameterNames();
-    //         Map<String, String> paramMap = new HashMap<>();
+    // Enumeration<String> params = request.getParameterNames();
+    // Map<String, String> paramMap = new HashMap<>();
 
-    //         while (params.hasMoreElements()) {
-    //             String paramName = params.nextElement();
-    //             paramMap.put(paramName, request.getParameter(paramName));
-    //         }
-    //         for (int i = 0; i < methodParams.length; i++) {
-    //             // if (methodParams[i].isAnnotationPresent(RequestBody.class)) {
-    //             //     Class<?> paramType = methodParams[i].getType();
-    //             //     Object paramObject = paramType.getDeclaredConstructor().newInstance();
-    //             //     for (Field field : paramType.getDeclaredFields()) {
-    //             //         String paramName = field.isAnnotationPresent(FormParametre.class) ? field.getAnnotation(FormParametre.class).value() : field.getName();
-    //             //         if (paramMap.containsKey(paramName)) {
-    //             //             field.setAccessible(true);
-    //             //             field.set(paramObject, paramMap.get(paramName));
-    //             //         }
-    //             //     }
-    //             //     args[i] = paramObject;
-    //             // }
-    //             // //sprint6
-    //             // else if (methodParams[i].isAnnotationPresent(Parametre.class)) {
-    //             //     String paramName = methodParams[i].getAnnotation(Parametre.class).name();
-    //             //     String paramValue = paramMap.get(paramName);
-    //             //     args[i] = paramValue;
-    //             // } else {
-    //             //     if (paramMap.containsKey(methodParams[i].getName())) {
-    //             //         args[i] = paramMap.get(methodParams[i].getName());
-    //             //     } else {
-    //             //         args[i] = null;
-    //             //     }
-    //             // }
-    //             if (methodParams[i].isAnnotationPresent(RequestBody.class)) {
-    //                 Class<?> paramType = methodParams[i].getType();
-    //                 Object paramObject = paramType.getDeclaredConstructor().newInstance();
-    //                 for (Field field : paramType.getDeclaredFields()) {
-    //                     String paramName = field.isAnnotationPresent(FormParametre.class) ? field.getAnnotation(FormParametre.class).value() : field.getName();
-    //                     if (paramMap.containsKey(paramName)) {
-    //                         field.setAccessible(true);
-    //                         field.set(paramObject, miCast(field.getType(), paramMap.get(paramName)));
-    //                     }
-    //                 }
-    //                 args[i] = paramObject;
-    //             } else if (methodParams[i].isAnnotationPresent(Parametre.class)) {
-    //                 String paramName = methodParams[i].getAnnotation(Parametre.class).name();
-    //                 String paramValue = paramMap.get(paramName);
-    //                 args[i] = miCast(methodParams[i].getType(), paramValue);
-    //             } else {
-    //                 if (paramMap.containsKey(methodParams[i].getName())) {
-    //                     args[i] = miCast(methodParams[i].getType(), paramMap.get(methodParams[i].getName()));
-    //                 } else {
-    //                     args[i] = null;
-    //                 }
-    //             }
-    //         }
-            
-    //         Object instance = clazz.getDeclaredConstructor().newInstance();
-    //         returnValue = map.getMethod().invoke(instance, args);
-    //     } catch (Exception e) {
-    //         throw e;
-    //     }
-    //     return returnValue;
+    // while (params.hasMoreElements()) {
+    // String paramName = params.nextElement();
+    // paramMap.put(paramName, request.getParameter(paramName));
+    // }
+    // for (int i = 0; i < methodParams.length; i++) {
+    // // if (methodParams[i].isAnnotationPresent(RequestBody.class)) {
+    // // Class<?> paramType = methodParams[i].getType();
+    // // Object paramObject = paramType.getDeclaredConstructor().newInstance();
+    // // for (Field field : paramType.getDeclaredFields()) {
+    // // String paramName = field.isAnnotationPresent(FormParametre.class) ?
+    // field.getAnnotation(FormParametre.class).value() : field.getName();
+    // // if (paramMap.containsKey(paramName)) {
+    // // field.setAccessible(true);
+    // // field.set(paramObject, paramMap.get(paramName));
+    // // }
+    // // }
+    // // args[i] = paramObject;
+    // // }
+    // // //sprint6
+    // // else if (methodParams[i].isAnnotationPresent(Parametre.class)) {
+    // // String paramName = methodParams[i].getAnnotation(Parametre.class).name();
+    // // String paramValue = paramMap.get(paramName);
+    // // args[i] = paramValue;
+    // // } else {
+    // // if (paramMap.containsKey(methodParams[i].getName())) {
+    // // args[i] = paramMap.get(methodParams[i].getName());
+    // // } else {
+    // // args[i] = null;
+    // // }
+    // // }
+    // if (methodParams[i].isAnnotationPresent(RequestBody.class)) {
+    // Class<?> paramType = methodParams[i].getType();
+    // Object paramObject = paramType.getDeclaredConstructor().newInstance();
+    // for (Field field : paramType.getDeclaredFields()) {
+    // String paramName = field.isAnnotationPresent(FormParametre.class) ?
+    // field.getAnnotation(FormParametre.class).value() : field.getName();
+    // if (paramMap.containsKey(paramName)) {
+    // field.setAccessible(true);
+    // field.set(paramObject, miCast(field.getType(), paramMap.get(paramName)));
+    // }
+    // }
+    // args[i] = paramObject;
+    // } else if (methodParams[i].isAnnotationPresent(Parametre.class)) {
+    // String paramName = methodParams[i].getAnnotation(Parametre.class).name();
+    // String paramValue = paramMap.get(paramName);
+    // args[i] = miCast(methodParams[i].getType(), paramValue);
+    // } else {
+    // if (paramMap.containsKey(methodParams[i].getName())) {
+    // args[i] = miCast(methodParams[i].getType(),
+    // paramMap.get(methodParams[i].getName()));
+    // } else {
+    // args[i] = null;
+    // }
+    // }
+    // }
+
+    // Object instance = clazz.getDeclaredConstructor().newInstance();
+    // returnValue = map.getMethod().invoke(instance, args);
+    // } catch (Exception e) {
+    // throw e;
+    // }
+    // return returnValue;
     // }
 
     private Object getValueInMethod(HttpServletRequest request, Mapping map) throws Exception {
@@ -220,25 +227,26 @@ public class FrontController extends HttpServlet {
         try {
             Class<?> clazz = Class.forName(map.getClassName());
             map.getMethod().setAccessible(true);
-    
+
             Parameter[] methodParams = map.getMethod().getParameters();
-            
+
             if (methodParams.length == 0) {
-                throw new IllegalArgumentException("ETU002616: methode " + map.getMethod().getName() + " sans parametres.");
+                throw new IllegalArgumentException(
+                        "ETU002616: methode " + map.getMethod().getName() + " sans parametres.");
             }
-    
+
             Object[] args = new Object[methodParams.length];
-    
+
             Enumeration<String> params = request.getParameterNames();
             Map<String, String> paramMap = new HashMap<>();
-    
+
             while (params.hasMoreElements()) {
                 String paramName = params.nextElement();
                 paramMap.put(paramName, request.getParameter(paramName));
             }
-    
+
             for (int i = 0; i < methodParams.length; i++) {
-                if(methodParams[i].getType().equals(CustomSession.class)){
+                if (methodParams[i].getType().equals(CustomSession.class)) {
                     CustomSession session = new CustomSession();
                     session.setSession(request.getSession());
                     args[i] = session;
@@ -246,7 +254,9 @@ public class FrontController extends HttpServlet {
                     Class<?> paramType = methodParams[i].getType();
                     Object paramObject = paramType.getDeclaredConstructor().newInstance();
                     for (Field field : paramType.getDeclaredFields()) {
-                        String paramName = field.isAnnotationPresent(FormParametre.class) ? field.getAnnotation(FormParametre.class).value() : field.getName();
+                        String paramName = field.isAnnotationPresent(FormParametre.class)
+                                ? field.getAnnotation(FormParametre.class).value()
+                                : field.getName();
                         if (paramMap.containsKey(paramName)) {
                             field.setAccessible(true);
                             field.set(paramObject, miCast(field.getType(), paramMap.get(paramName)));
@@ -265,14 +275,14 @@ public class FrontController extends HttpServlet {
                     }
                 }
             }
-            
+
             Object instance = clazz.getDeclaredConstructor().newInstance();
-            for(Field field: clazz.getDeclaredFields()){
+            for (Field field : clazz.getDeclaredFields()) {
                 if (field.getType().equals(CustomSession.class)) {
                     field.setAccessible(true);
                     CustomSession session = new CustomSession();
                     session.setSession(request.getSession());
-                    field.set(instance,session);
+                    field.set(instance, session);
                     break;
                 }
             }
@@ -284,49 +294,50 @@ public class FrontController extends HttpServlet {
     }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
         String url = request.getRequestURI().substring(request.getContextPath().length());
-        try{
+        try {
             PrintWriter out = response.getWriter();
             Mapping mapping = urlMappings.get(url);
             if (mapping != null) {
                 Object ob = getValueInMethod(request, mapping);
                 if (ob != null) {
                     if (ob instanceof String) {
-                        // out.println("Method <b>" + mapping.getMethod().getName() + "</b> Value: <b>" + ob+"<b>");
+                        // out.println("Method <b>" + mapping.getMethod().getName() + "</b> Value: <b>"
+                        // + ob+"<b>");
                         out.println(ob);
-                    }
-                    else if(ob instanceof ModelAndView mw){
+                    } else if (ob instanceof ModelAndView) {
+                        ModelAndView mw = new ModelAndView();
                         for (String cle : mw.getData().keySet()) {
                             request.setAttribute(cle, mw.getData().get(cle));
                         }
                         RequestDispatcher dispacther = request.getRequestDispatcher(mw.getUrl());
                         dispacther.forward(request, response);
+                    } else {
+                        throw new ServletException("Failed to return the value",
+                                new Exception("The value returned by the method <b>" + mapping.getMethod()
+                                        + "</b> is not in the framework"));
                     }
-                    else{
-                        throw new ServletException("Failed to return the value",new Exception("The value returned by the method <b>" + mapping.getMethod() + "</b> is not in the framework"));
-                    }
-                }
-                else{
+                } else {
                     throw new ServletException("No value returned");
                 }
-                
+
             } else {
-                throw new ServletException("Failed to get the method",new Exception("No Get method associated with the URL: <b>" + url+"</b>"));
+                throw new ServletException("Failed to get the method",
+                        new Exception("No Get method associated with the URL: <b>" + url + "</b>"));
             }
-        }
-        catch(Exception e){
-            try(PrintWriter out = response.getWriter()){
+        } catch (Exception e) {
+            try (PrintWriter out = response.getWriter()) {
                 out.println(e);
             }
         }
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
-    throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try {
             processRequest(request, response);
@@ -338,7 +349,7 @@ public class FrontController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try {
             processRequest(request, response);

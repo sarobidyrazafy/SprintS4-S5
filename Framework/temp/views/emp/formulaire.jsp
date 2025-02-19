@@ -1,31 +1,23 @@
-<%@page import="mg.itu.controller.EmpController"%>
-<%@page import="java.util.ArrayList"%>
 <%
-    String link = (String)request.getAttribute("action");
+    MySession ses = (MySession) request.getAttribute("session");
 %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>JSP page</title>
-    <!-- Bootstrap CSS -->
-    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <title>Formulaire d'Employé</title>
 </head>
 <body>
-<div class="container mt-5">
-    <h1>Formulaire Employe</h1>
-    <form action="<%= link %>" method="post">
-        <label for="name">Nom:</label>
-        <input type="text" name="nom" id="nom"> <br>
-        <label for="job">Prenom:</label>
-        <input type="text" name="prenom" id="prenom"> <br>
-        <label for="salaire">age:</label>
-        <input type="number" name="age" id="age"> <br>
-        <input type="submit" value="Valider">
-    </form>
-</div>
-<!-- Bootstrap JS (optional, but needed for some features) -->
-<script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+<form action="emp/traitement" method="post">
+    <label for="nom">Nom:</label>
+    <input type="text" id="nom" name="nom" required><br>
+    
+    <label for="prenom">Prénom:</label>
+    <input type="text" id="prenom" name="prenom" required><br>
+    
+    <input type="submit" value="Valider">
+</form>
 </body>
 </html>

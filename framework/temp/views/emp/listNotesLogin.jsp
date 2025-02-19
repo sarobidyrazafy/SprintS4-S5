@@ -1,44 +1,34 @@
-<%@page import="mg.itu.model.Note"%>
-<%@page import="mg.itu.model.Utilisateur"%>
-<%@page import="java.util.ArrayList"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="mg.itu.model.Note" %>
 <%
-    ArrayList<Note> list_notes =(ArrayList<Note>) request.getAttribute("list_notes");
+    MySession ses = (MySession) request.getAttribute("session");
+    ArrayList<Note> list_notes = (ArrayList<Note>) request.getAttribute("list_notes");
 %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>JSP page</title>
-    <!-- Bootstrap CSS -->
-    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <title>Notes de l'Utilisateur</title>
 </head>
 <body>
-<div class="container mt-5">
-    <div class="mb-3">
-        <a href="/Sprint_All/emp/logout?id=0" class="btn btn-primary">Logout</a>
-    </div>
-    <table class="table" border="1">
-        <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Matière</th>
-            <th>Note</th>
-        </tr>
-        </thead>
-        <tbody>
-            <% if (list_notes != null) { 
-                for (Note n : list_notes) { %>
-                    <tr>
-                        <td><%=n.getUtilisateur().getNom() %></td>
-                        <td><%=n.getMatiere() %></td>
-                        <td><%=n.getNote() %></td>
-                    </tr>
-            <% } } %>
-        </tbody>
-    </table>
-</div>
-<!-- Bootstrap JS (optional, but needed for some features) -->
-<script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+<h1>Mes Notes</h1>
+<table border="1">
+    <tr>
+        <th>Titre de la Note</th>
+        <th>Contenu</th>
+    </tr>
+    <%
+        for (Note note : list_notes) {
+    %>
+    <tr>
+        <td><%= note.getTitre() %></td>
+        <td><%= note.getContenu() %></td>
+    </tr>
+    <%
+        }
+    %>
+</table>
+<a href="emp/logout">Se Déconnecter</a>
 </body>
 </html>

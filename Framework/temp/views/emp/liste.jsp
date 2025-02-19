@@ -1,6 +1,8 @@
 <%@page import="mg.itu.controller.EmpController"%>
+<%@page import="mg.itu.annotation.MySession"%>
 <%@page import="java.util.ArrayList"%>
 <%
+    MySession ses = (MySession) request.getAttribute("session");
     ArrayList<EmpController> emps =(ArrayList<EmpController>) request.getAttribute("list");
 %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -8,18 +10,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>JSP page</title>
-    <!-- Bootstrap CSS -->
-    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <title>List Emp</title>
 </head>
 <body>
+<%if (ses != null) { %>
+    <form action="logout" method="post">
+        <input type="submit" value="Deconnecter">
+    </form>
+<% } %>
 <div class="container mt-5">
     <table class="table" border="1">
         <thead>
         <tr>
-            <th>Nom</th>
-            <th>Prenom</th>
-            <th>Age</th>
+            <th>Name</th>
+            <th>Job</th>
         </tr>
         </thead>
         <tbody>
@@ -34,7 +38,5 @@
         </tbody>
     </table>
 </div>
-<!-- Bootstrap JS (optional, but needed for some features) -->
-<script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
