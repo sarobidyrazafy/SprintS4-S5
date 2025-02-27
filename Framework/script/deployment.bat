@@ -2,7 +2,7 @@
 setlocal
 
 rem D\u00E9claration des variables
-set projet=Sprint
+set projet=SprintRehetra
 set temp=.\..\temp
 set conf=.\..\..\test\conf
 set config=.\..\config.properties
