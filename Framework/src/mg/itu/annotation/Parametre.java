@@ -1,8 +1,8 @@
 package mg.itu.annotation;
 import java.lang.annotation.*;
 
-@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface Parametre {
     String name();
 }

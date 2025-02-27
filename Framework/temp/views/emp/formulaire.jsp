@@ -1,23 +1,33 @@
+<%-- 
+    Document   : index
+    Created on : 25 janv. 2024, 11:59:21
+    Author     : mahan
+--%>
+<%@page import="mg.itu.controller.EmpController"%>
+<%@page import="java.util.ArrayList"%>
 <%
-    MySession ses = (MySession) request.getAttribute("session");
+    String link = (String)request.getAttribute("action");
 %>
-
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Formulaire d'Employé</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>JSP page</title>
+    <!-- Bootstrap CSS -->
+    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<form action="emp/traitement" method="post">
-    <label for="nom">Nom:</label>
-    <input type="text" id="nom" name="nom" required><br>
-    
-    <label for="prenom">Prénom:</label>
-    <input type="text" id="prenom" name="prenom" required><br>
-    
-    <input type="submit" value="Valider">
+<div class="container mt-5">
+<form action="<%= link %>" method="post" enctype="multipart/form-data">
+    <label for="photos">Photo:</label>
+    <input type="file" name="photos"><br>
+
+    <button type="submit">Submit</button>
 </form>
+
+</div>
+<!-- Bootstrap JS (optional, but needed for some features) -->
+<script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

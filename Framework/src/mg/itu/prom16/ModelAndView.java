@@ -5,6 +5,7 @@ import java.util.HashMap;
 public class ModelAndView {
     String url;
     HashMap<String,Object> data;
+
     public String getUrl() {
         return url;
     }
@@ -23,5 +24,6 @@ public class ModelAndView {
         }
         this.data.put(key, value);
     }
+    
     
 }

@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
     http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
     version="2.4">
-    <display-name>Framework Spring MVC S5</display-name>
+    <display-name>Cr\u00E9ation d'un framework comme Spring MVC made by Mahandy ETU002393</display-name>
     <servlet>
         <servlet-name>FrontController</servlet-name>
         <servlet-class>mg.itu.prom16.FrontController</servlet-class>

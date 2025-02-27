@@ -1,103 +1,126 @@
 package mg.itu.controller;
 
-import java.util.ArrayList;
+import java.util.List;
+import jakarta.servlet.http.Part;
 import mg.itu.annotation.AnnotationController;
+import mg.itu.annotation.Authenticated;
 import mg.itu.annotation.Get;
-import mg.itu.annotation.Parametre;
-import mg.itu.model.CustomSession;
+import mg.itu.annotation.Url;
 import mg.itu.model.Employe;
-import mg.itu.model.Note;
+import mg.itu.annotation.Parametre;
+import mg.itu.annotation.Post;
+import mg.itu.annotation.RequestBody;
+import mg.itu.annotation.RestAPI;
+import mg.itu.prom16.FileSave;
 import mg.itu.prom16.ModelAndView;
 
-@AnnotationController
+@AnnotationController()
 public class EmpController {
+    Employe emp = new Employe();
 
-    CustomSession session;
-
-    public CustomSession getSession() {
-        return session;
-    }
-
-    public void setSession(CustomSession session) {
-        this.session = session;
-    }
-
-    @Get(value = "/emp/list")
-    public ModelAndView list(@Parametre(name = "id") int id) {
+    @Url(value = "/emp/list")
+    public ModelAndView list(){
         ModelAndView mv = new ModelAndView();
-        mv.setUrl("../views/emp/liste.jsp");
-        mv.addObject("list", generateListEmp());
+        mv.setUrl("../views/emp/list.jsp");
+        mv.addObject("list", emp.generateListEmp());
         return mv;
     }
 
-    @Get(value = "/emp/formulaire")
-    public ModelAndView form() {
+    @Url(value = "/emp/table")
+    @RestAPI
+    public List<Employe> liste() {
+        return emp.generateListEmp();
+    }
+
+    @Url(value = "/emp/tables")
+    @RestAPI
+    public ModelAndView table(){
+        ModelAndView mv = new ModelAndView();
+        mv.setUrl("../views/emp/list.jsp");
+        mv.addObject("list", emp.generateListEmp());
+        return mv;
+    }
+
+    @Get
+    @Url(value="/emp/form")
+    public ModelAndView form(){
+        ModelAndView mv = new ModelAndView();
+        mv.setUrl("../views/emp/form.jsp");
+        mv.addObject("action", "treatment");
+        return mv;
+    }
+
+    @Get
+    @Url(value="/emp/formulaire")
+    public ModelAndView formulaire(){
         ModelAndView mv = new ModelAndView();
         mv.setUrl("../views/emp/formulaire.jsp");
         mv.addObject("action", "traitement");
         return mv;
     }
 
-    @Get(value = "/emp/traitement")
-    public ModelAndView treatment(@Parametre(name = "nom") String nom, @Parametre(name = "prenom") String prenom) {
+    @Post
+    @Url(value="/emp/formout")
+    public ModelAndView formol(){
         ModelAndView mv = new ModelAndView();
-        Employe employe = new Employe(nom, prenom, 0); // Ajustez l'âge si nécessaire
-        mv.setUrl("../views/emp/affichage.jsp");
-        mv.addObject("employe", employe);
+        mv.setUrl("../views/emp/form.jsp");
+        mv.addObject("action", "treatment");
         return mv;
     }
 
-    @Get(value = "/emp/testparam")
-    public ModelAndView testparam() {
+    // @Post
+    // @Url(value="/emp/form")
+    // public ModelAndView formout(){
+    //     ModelAndView mv = new ModelAndView();
+    //     mv.setUrl("../views/emp/formout.jsp");
+    //     mv.addObject("action", "treat");
+    //     return mv;
+    // }
+
+    // @Authenticated(roles = {1}) 
+    @Post
+    @Url(value="/emp/treatment")
+    public ModelAndView treatment(@RequestBody Employe employe) throws Exception {
         ModelAndView mv = new ModelAndView();
-        mv.setUrl("../views/emp/affichage.jsp");
+        mv.setUrl("../views/emp/result.jsp");
+
+        mv.addObject("name", employe.name);
+        mv.addObject("job", employe.job);
+        mv.addObject("user", employe.user);
+        // mv.addObject("naissance", employe.naissance);
+        mv.addObject("salaire", employe.salaire);
         return mv;
     }
 
-    @Get(value = "/emp/login")
-    public ModelAndView login(@Parametre(name = "id") int id) {
+    
+    @Post
+    @Url(value="/emp/traitement")
+    public ModelAndView treatment(@Parametre(name = "photos") Part photoFile) throws Exception {
+        Employe emp = new Employe();
         ModelAndView mv = new ModelAndView();
-        mv.setUrl("../views/emp/login.jsp");
-        mv.addObject("action", "traitlogin");
-        return mv;
-    }
-
-    @Get(value = "/emp/traitlogin")
-    public ModelAndView traitlogin(@Parametre(name = "email") String email, @Parametre(name = "mdp") String mdp) {
-        ModelAndView mv = new ModelAndView();
-        ArrayList<Note> list_notes = Note.getNotesForUser(email, mdp);
-        if (!list_notes.isEmpty()) {
-            session.add("userEmail", email);
-            session.add("userMdp", mdp);
+        mv.setUrl("../views/emp/resultat.jsp");
+        if (photoFile != null && photoFile.getSize() > 0) {
+              emp.photos = FileSave.saveFile(photoFile);
         }
-        mv.setUrl("../views/emp/listNotesLogin.jsp");
-        mv.addObject("list_notes", list_notes);
+        mv.addObject("photos", emp.photos);
         return mv;
     }
+    
 
-    @Get(value = "/emp/listeNotes")
-    public ModelAndView listAllNote(@Parametre(name = "id") int id) {
+    @Url(value="/emp/treat")
+    public ModelAndView treat(String name,String job){
         ModelAndView mv = new ModelAndView();
-        ArrayList<Note> list_notes = Note.generateNotes();
-        mv.setUrl("../views/emp/listNotes.jsp");
-        mv.addObject("list_notes", list_notes);
+        mv.setUrl("../views/emp/result.jsp");
+        mv.addObject("name", name);
+        mv.addObject("job", job);
         return mv;
     }
 
-    @Get(value = "/emp/logout")
-    public ModelAndView logout(@Parametre(name = "id") int id) {
-        session.delete("userEmail");
-        session.delete("userMdp");
-        return listAllNote(0);
-    }
-
-
-    private ArrayList<Employe> generateListEmp() {
-        ArrayList<Employe> listemp = new ArrayList<>();
-        listemp.add(new Employe("Aina", "Sarobidy", 19));
-        listemp.add(new Employe("Razafy", "Mahandry", 20));
-        listemp.add(new Employe("Rabe", "Ryan", 20));
-        listemp.add(new Employe("Andry", "Fihobiana", 20));
-        return listemp;
-    }
+    // @Url(value="/emp/treatment")
+    // public ModelAndView treatment(@RequestBody EmpController employe ){
+    //     ModelAndView mv = new ModelAndView();
+    //     mv.setUrl("../views/emp/result.jsp");
+    //     mv.addObject("employe", employe);
+    //     return mv;
+    // }
 }
