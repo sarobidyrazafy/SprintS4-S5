@@ -1,11 +1,7 @@
 package mg.itu.controller;
 
 import mg.itu.annotation.AnnotationController;
-import mg.itu.annotation.FormParametre;
-import mg.itu.annotation.Get;
-import mg.itu.annotation.Parametre;
-import mg.itu.annotation.RequestBody;
-import mg.itu.prom16.ModelAndView;
+import mg.itu.annotation.parametre.FormParametre;
 
 @AnnotationController()
 public class EtablissementController {

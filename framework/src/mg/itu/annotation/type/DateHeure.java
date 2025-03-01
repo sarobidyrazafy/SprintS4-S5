@@ -1,4 +1,4 @@
-package mg.itu.annotation;
+package mg.itu.annotation.type;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface Temps {
-    String format() default "HH:mm:ss";
+public @interface DateHeure {
+    String format() default "yyyy-MM-dd HH:mm:ss";
 }

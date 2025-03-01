@@ -3,7 +3,7 @@
     Created on : 25 janv. 2024, 11:59:21
     Author     : mahan
 --%>
-<%@page import="mg.itu.controller.EmpController"%>
+<%@page import="mg.itu.model.Etudiant"%>
 <%@page import="java.util.ArrayList"%>
 <%
     String link = (String)request.getAttribute("action");
@@ -19,15 +19,14 @@
 </head>
 <body>
 <div class="container mt-5">
-<form action="<%= link %>" method="post" enctype="multipart/form-data">
-    <label for="photos">Photo:</label>
-    <input type="file" name="photos"><br>
-
-    <button type="submit">Submit</button>
-</form>
-
+    <form action="<%= link %>" method="post">
+        <label for="nom">Nom:</label>
+        <input type="text" name="nom" id="nom">
+        <label for="prenom">Prenom:</label>
+        <input type="text" name="prenom" id="prenom">
+        <input type="submit" value="Valider">
+    </form>
 </div>
-<!-- Bootstrap JS (optional, but needed for some features) -->
 <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

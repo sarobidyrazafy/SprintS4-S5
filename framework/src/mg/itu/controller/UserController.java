@@ -1,15 +1,13 @@
 package mg.itu.controller;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-
 import mg.itu.annotation.AnnotationController;
 import mg.itu.annotation.Authenticated;
-import mg.itu.annotation.Url;
-import mg.itu.model.Employe;
 import mg.itu.annotation.MySession;
-import mg.itu.annotation.Parametre;
-import mg.itu.annotation.Post;
+import mg.itu.annotation.Url;
+import mg.itu.annotation.parametre.Parametre;
+import mg.itu.annotation.verbaction.Post;
+import mg.itu.model.Etudiant;
 import mg.itu.prom16.ModelAndView;
 
 @AnnotationController()
@@ -40,7 +38,7 @@ public class UserController {
     @Url(value="/user/login")
     public ModelAndView login(@Parametre(name = "email")String email,@Parametre(name = "pwd")String pwd){
         ModelAndView mv = new ModelAndView();
-        ArrayList<UserController> listuser = generateUser();
+        ArrayList<UserController> listuser = listeUsers();
         for (UserController user : listuser) {
             if (user.UrlEmail().compareTo(email) == 0 && user.UrlPassword().compareTo(pwd) == 0) {
                 session.add("user", user.UrlUser());
@@ -50,7 +48,7 @@ public class UserController {
             }
         }
         mv.setUrl("../views/user/form.jsp");
-        mv.addObject("error", "Identifiant incorrect");
+        mv.addObject("error", "Identifiant invalide");
         return mv;
     }
 
@@ -70,11 +68,11 @@ public class UserController {
         return mv;
     }
 
-    private ArrayList<UserController> generateUser(){
+    private ArrayList<UserController> listeUsers(){
         ArrayList<UserController> listuser = new ArrayList<>();
-        listuser.add(new UserController(1,"mahandry@gmail.com", "1234"));
-        listuser.add(new UserController(2,"toky@gmail.com", "pwd1234"));
-        listuser.add(new UserController(3,"sitraka@gmail.com", "123456"));
+        listuser.add(new UserController(1,"user1@gmail.com", "pwd1"));
+        listuser.add(new UserController(2,"user2@gmail.com", "pwd2"));
+        listuser.add(new UserController(3,"user3@gmail.com", "pwd3"));
         return listuser;
     }
 
@@ -108,7 +106,7 @@ public class UserController {
     public ModelAndView empList() {
         ModelAndView mv = new ModelAndView();
         mv.setUrl("../views/emp/list.jsp");
-        mv.addObject("list", new Employe().generateListEmp());
+        mv.addObject("list", new Etudiant().listeEtudiants());
         return mv;
     }
 }

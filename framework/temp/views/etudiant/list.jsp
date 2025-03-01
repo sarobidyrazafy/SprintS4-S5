@@ -3,7 +3,7 @@
     Created on : 25 janv. 2024, 11:59:21
     Author     : mahan
 --%>
-<%@page import="mg.itu.model.Employe"%>
+<%@page import="mg.itu.model.Etudiant"%>
 <%@page import="mg.itu.annotation.MySession"%>
 <%@page import="java.util.ArrayList"%>
 <%
@@ -29,15 +29,15 @@
     <table class="table" border="1">
         <thead>
         <tr>
-            <th>Name</th>
-            <th>Job</th>
+            <th>Nom</th>
+            <th>Prenom</th>
         </tr>
         </thead>
         <tbody>
-            <% for (Employe emp : emps) { %>
+            <% for (Etudiant etudiant : etudiants) { %>
                 <tr>
-                    <td><%=emp.getName() %></td>
-                    <td><%=emp.getJob() %></td>
+                    <td><%=etudiant.getNom() %></td>
+                    <td><%=etudiant.getPrenom() %></td>
                 </tr>
             <% } %>
         

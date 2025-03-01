@@ -1,9 +1,9 @@
-package mg.itu.annotation;
+package mg.itu.annotation.verbaction;
 
 import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Post {
+public @interface Get {
 }
 

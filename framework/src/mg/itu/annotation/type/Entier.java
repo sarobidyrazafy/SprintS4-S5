@@ -1,4 +1,4 @@
-package mg.itu.annotation;
+package mg.itu.annotation.type;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,6 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface Date {
-   String format() default "yyyy-MM-dd";;
+public @interface Entier {
+    int min() default Integer.MIN_VALUE;
+    int max() default Integer.MAX_VALUE;
 }
